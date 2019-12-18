@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:charts="clr-namespace:Microcharts.Forms;assembly=Microcharts.Forms"
+             xmlns:vm="clr-namespace:AdExchangeAnalyzer.ViewModels"
+             mc:Ignorable="d"
+             x:Class="AdExchangeAnalyzer.Views.AnomalyView">
+
+    <ContentPage.BindingContext>
+        <vm:AnomalyViewModel/>
+    </ContentPage.BindingContext>
+    
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Margin="10,5" 
+                   FontAttributes="Bold"
+                   TextColor="DarkSlateBlue"
+                   Text="Ad Exchange Ratio chart (cpc)" />
+
+            <charts:ChartView HeightRequest="275"
+                              Chart="{Binding Chart}" />
+
+            <StackLayout Margin="10,5" 
+                         Orientation="Horizontal">
+
+                <Label Margin="0,0,10,0" 
+                       VerticalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       TextColor="DarkSlateBlue"
+                       Text="Sensitivity:" />
+
+                <Picker Title="Select a value"
+                        VerticalOptions="Center"
+                        TitleColor="DarkSlateBlue"
+                        SelectedItem="{Binding Sensitivity, Mode=TwoWay}">
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:Int32}">
+                            <x:Int32>99</x:Int32>
+                            <x:Int32>98</x:Int32>
+                            <x:Int32>97</x:Int32>
+                            <x:Int32>96</x:Int32>
+                            <x:Int32>95</x:Int32>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+            </StackLayout>
+
+            <Button Margin="10,5"
+                    WidthRequest="300"
+                    CornerRadius="20"
+                    TextColor="White"
+                    Text="Analyze data"
+                    BackgroundColor="DeepSkyBlue"
+                    Command="{Binding AnalyzeDataCommand}"/>
+
+            <Label Margin="10,5" 
+                   FontAttributes="Bold"
+                   TextColor="DarkRed"
+                   Text="{Binding DataPointEx.Count, StringFormat='Number of Anomalies detected: {0}'}" />
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               IsVisible="{Binding IsBusy}"
+                               HeightRequest="40"
+                               WidthRequest="40"
+                               Color="Orange"
+                               HorizontalOptions="Center"/>
+
+            <ListView Margin="10,5"
+                      ItemsSource="{Binding DataPointEx}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid VerticalOptions="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Label Grid.Column="0" 
+                                       TextColor="Black"
+                                       Text="{Binding Timestamp, StringFormat='Date: {0:MM/dd/yyyy HH_mm_ss}'}" />
+
+                                <Label Grid.Column="1"
+                                       TextColor="DarkSlateGray"
+                                       Text="{Binding Value, StringFormat='Value: {0:N2}'}" />
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
